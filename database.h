@@ -16,6 +16,8 @@ public:
 	int GetDay() const;
 
 	string ToString() const;
+
+	static Date ParseDate(const string& s);
 private:
 	int year;
 	int month;
@@ -23,6 +25,8 @@ private:
 };
 
 bool operator<(const Date& lhs, const Date& rhs);
+bool operator==(const Date& lhs, const Date& rhs);
+ostream& operator<<(ostream& out, const Date& d);
 
 class Database {
 public:

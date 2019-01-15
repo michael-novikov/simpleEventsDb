@@ -1,5 +1,6 @@
 #include "database.h"
 #include <sstream>
+#include <iostream>
 #include <iomanip>
 
 using namespace std;
@@ -39,4 +40,43 @@ string Date::ToString() const {
 			<< setw(2) << setfill('0') << GetDay();
 
 	return stream.str();
+}
+
+Date Date::ParseDate(const string& s) {
+	stringstream stream(s);
+	int year, month, day;
+
+	if (!(stream >> year)) {
+		throw invalid_argument("Wrong date format");
+	}
+
+	if (stream.peek() != '-') {
+		throw invalid_argument("Wrong date format");
+	}
+
+	stream.ignore(1);
+	stream >> month;
+
+	if (stream.peek() != '-') {
+		throw invalid_argument("Wrong date format");
+	}
+
+	stream.ignore(1);
+	stream >> day;
+
+	if (stream.rdbuf()->in_avail()) {
+		throw invalid_argument("Wrong date format");
+	}
+
+	return Date(year, month, day);
+}
+
+bool operator==(const Date& lhs, const Date& rhs) {
+	return (lhs.GetYear() == rhs.GetYear())
+			&& (lhs.GetMonth() == rhs.GetMonth())
+			&& (lhs.GetDay() == rhs.GetDay());
+}
+
+ostream& operator<<(ostream& out, const Date& d) {
+	return out << d.ToString();
 }
