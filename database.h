@@ -1,3 +1,6 @@
+#ifndef DATABASE_H
+#define DATABASE_H
+
 #include <string>
 
 using namespace std;
@@ -6,9 +9,17 @@ using namespace std;
 
 class Date {
 public:
-  int GetYear() const;
-  int GetMonth() const;
-  int GetDay() const;
+	Date(int year, int month, int day);
+
+	int GetYear() const;
+	int GetMonth() const;
+	int GetDay() const;
+
+	string ToString() const;
+private:
+	int year;
+	int month;
+	int day;
 };
 
 bool operator<(const Date& lhs, const Date& rhs);
@@ -25,3 +36,5 @@ public:
 
   void Print() const;
 };
+
+#endif // DATABASE_H
