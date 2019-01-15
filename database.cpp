@@ -7,11 +7,11 @@ using namespace std;
 
 Date::Date(int year, int month, int day) {
 	if (month < 1 || month > 12) {
-		throw domain_error("Month value is invalid");
+		throw domain_error("Month value is invalid: " + to_string(month));
 	}
 
 	if (day < 1 || day > 31) {
-		throw domain_error("Day value is invalid");
+		throw domain_error("Day value is invalid: " + to_string(day));
 	}
 
 
@@ -43,29 +43,30 @@ string Date::ToString() const {
 }
 
 Date Date::ParseDate(const string& s) {
+	string error = "Wrong date format: " + s;
 	stringstream stream(s);
 	int year, month, day;
 
 	if (!(stream >> year)) {
-		throw invalid_argument("Wrong date format");
+		throw invalid_argument(error);;
 	}
 
 	if (stream.peek() != '-') {
-		throw invalid_argument("Wrong date format");
+		throw invalid_argument(error);
 	}
 
 	stream.ignore(1);
 	stream >> month;
 
 	if (stream.peek() != '-') {
-		throw invalid_argument("Wrong date format");
+		throw invalid_argument(error);
 	}
 
 	stream.ignore(1);
 	stream >> day;
 
 	if (stream.rdbuf()->in_avail()) {
-		throw invalid_argument("Wrong date format");
+		throw invalid_argument(error);
 	}
 
 	return Date(year, month, day);
@@ -98,6 +99,16 @@ ostream& operator<<(ostream& out, const Date& d) {
 	return out << d.ToString();
 }
 
+istream& operator>>(istream& in, Date& d) {
+	string s;
+	in >> s;
+
+	Date new_date = Date::ParseDate(s);
+	d = new_date;
+
+	return in;
+}
+
 void Database::AddEvent(const Date& date, const string& event) {
 	events[date].insert(event);
 }
@@ -116,7 +127,7 @@ int Database::DeleteDate(const Date& date) {
 	}
 
 	int size = events[date].size();
-	events[date] = {};
+	events.erase(date);
 
 	return size;
 }

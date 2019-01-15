@@ -1,11 +1,13 @@
-#define BOOST_TEST_MODULE database
+#define BOOST_TEST_MODULE DatabaseTestModule
 #include "boost/test/included/unit_test.hpp"
+
+#include <sstream>
 
 #include "database.h"
 
-BOOST_AUTO_TEST_SUITE(DB)
+BOOST_AUTO_TEST_SUITE(DatabaseTest)
 
-BOOST_AUTO_TEST_CASE(CreateDate) {
+BOOST_AUTO_TEST_CASE(testCreateDate) {
 	BOOST_CHECK_NO_THROW(Date(2000, 1, 1));
 	BOOST_CHECK_NO_THROW(Date(-1, 12, 31));
 	BOOST_CHECK_NO_THROW(Date(0, 1, 1));
@@ -17,7 +19,7 @@ BOOST_AUTO_TEST_CASE(CreateDate) {
 	BOOST_CHECK_THROW(Date(1, 13, 1), domain_error);
 }
 
-BOOST_AUTO_TEST_CASE(DateGetters) {
+BOOST_AUTO_TEST_CASE(testDateGetters) {
 	const Date d(2000, 1, 1);
 
 	BOOST_REQUIRE_EQUAL(d.GetYear(), 2000);
@@ -25,7 +27,7 @@ BOOST_AUTO_TEST_CASE(DateGetters) {
 	BOOST_REQUIRE_EQUAL(d.GetDay(), 1);
 }
 
-BOOST_AUTO_TEST_CASE(DateOperators) {
+BOOST_AUTO_TEST_CASE(testDateOperators) {
 	const Date d1(2000, 1, 1);
 	const Date d2(2000, 1, 1);
 	BOOST_CHECK(d1 == d2);
@@ -45,7 +47,7 @@ BOOST_AUTO_TEST_CASE(DateOperators) {
 	BOOST_CHECK(!(d6 < d7));
 }
 
-BOOST_AUTO_TEST_CASE(DateToString) {
+BOOST_AUTO_TEST_CASE(testDateToString) {
 	const Date d1(2019, 12, 31);
 	BOOST_REQUIRE_EQUAL(d1.ToString(), "2019-12-31");
 
@@ -65,7 +67,7 @@ BOOST_AUTO_TEST_CASE(DateToString) {
 	BOOST_REQUIRE_EQUAL(d6.ToString(), "0001-01-01");
 }
 
-BOOST_AUTO_TEST_CASE(ParseDate) {
+BOOST_AUTO_TEST_CASE(testParseDate) {
 	BOOST_CHECK_NO_THROW(Date::ParseDate("2000-01-01"));
 
 	const Date d1 = Date::ParseDate("2000-01-01");
@@ -83,9 +85,22 @@ BOOST_AUTO_TEST_CASE(ParseDate) {
 
 	BOOST_CHECK_THROW(Date::ParseDate("2000-1-0"), domain_error);
 	BOOST_CHECK_THROW(Date::ParseDate("2000-0-1"), domain_error);
+
+	Date d3;
+	stringstream stream("2000-01-01");
+	BOOST_CHECK_NO_THROW(stream >> d3);
+	BOOST_REQUIRE_EQUAL(d3, Date(2000, 01, 01));
+
+	Date d4;
+	stringstream stream2("a2000-01-01");
+	BOOST_CHECK_THROW(stream2 >> d4, invalid_argument);
+
+	Date d5;
+	stringstream stream3("2000-1-0");
+	BOOST_CHECK_THROW(stream3 >> d5, domain_error);
 }
 
-BOOST_AUTO_TEST_CASE(DatabaseAddAndFind) {
+BOOST_AUTO_TEST_CASE(testDatabaseAddAndFind) {
 	Database db;
 	db.AddEvent(Date(2000, 01, 01), "event");
 
@@ -97,7 +112,7 @@ BOOST_AUTO_TEST_CASE(DatabaseAddAndFind) {
 	BOOST_REQUIRE_EQUAL(e2.size(), 0);
 }
 
-BOOST_AUTO_TEST_CASE(DatabaseDeleteEvent) {
+BOOST_AUTO_TEST_CASE(testDatabaseDeleteEvent) {
 	Database db;
 	db.AddEvent(Date(2000, 01, 01), "event");
 
@@ -107,7 +122,7 @@ BOOST_AUTO_TEST_CASE(DatabaseDeleteEvent) {
 	BOOST_REQUIRE_EQUAL(db.DeleteEvent(Date(2000, 01, 01), "event"), true);
 }
 
-BOOST_AUTO_TEST_CASE(DatabaseDeleteAllEvents) {
+BOOST_AUTO_TEST_CASE(testDatabaseDeleteAllEvents) {
 	Database db;
 	Date d(2000, 01, 01);
 
