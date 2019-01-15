@@ -180,11 +180,9 @@ set<string> Database::Find(const Date& date) const {
 
 void Database::Print() const {
 	for (const auto& item : events) {
-		cout << item.first;
 		for (const auto& event : item.second) {
-			cout << " " << event;
+			cout << item.first << " " << event << endl;
 		}
-		cout << endl;
 	}
 }
 
@@ -243,6 +241,7 @@ int main() {
 			db.Print();
 		} else {
 			cout << "Unknown command: " << op_code << endl;
+			return -1;
 		}
 	}
 

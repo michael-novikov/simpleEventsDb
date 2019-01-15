@@ -98,6 +98,13 @@ BOOST_AUTO_TEST_CASE(testParseDate) {
 	Date d5;
 	stringstream stream3("2000-1-0");
 	BOOST_CHECK_THROW(stream3 >> d5, domain_error);
+
+	BOOST_REQUIRE_EQUAL(Date::ParseDate("1-1-1"), Date(1, 1, 1));
+	BOOST_REQUIRE_EQUAL(Date::ParseDate("-1-1-1"), Date(-1, 1, 1));
+	BOOST_CHECK_THROW(Date::ParseDate("1--1-0"), domain_error);
+	BOOST_CHECK_THROW(Date::ParseDate("1-1--1"), domain_error);
+	BOOST_CHECK_THROW(Date::ParseDate("1---1-1"), invalid_argument);
+	BOOST_CHECK_THROW(Date::ParseDate("1-1---1"), invalid_argument);
 }
 
 BOOST_AUTO_TEST_CASE(testDatabaseAddAndFind) {

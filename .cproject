@@ -447,6 +447,12 @@
             		
         </configuration>
         		
+        <configuration configurationName="AllInOneFile">
+            			
+            <resource resourceType="PROJECT" workspacePath="/simpleEventsDb"/>
+            		
+        </configuration>
+        		
         <configuration configurationName="Debug">
             			
             <resource resourceType="PROJECT" workspacePath="/simpleEventsDb"/>

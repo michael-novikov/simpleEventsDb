@@ -59,6 +59,7 @@ int main() {
 			db.Print();
 		} else {
 			cout << "Unknown command: " << op_code << endl;
+			return -1;
 		}
 	}
 
