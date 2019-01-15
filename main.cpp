@@ -1,6 +1,7 @@
+#include <iostream>
 #include "database.h"
 
-int main() {
+int __main() {
   Database db;
     
   string command;

@@ -1,3 +1,4 @@
-#include "database.h"
-#include "boost/test/unit_test.hpp"
+#define BOOST_TEST_MODULE database
+#include "boost/test/included/unit_test.hpp"
 
+#include "database.h"
