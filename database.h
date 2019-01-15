@@ -2,10 +2,10 @@
 #define DATABASE_H
 
 #include <string>
+#include <map>
+#include <set>
 
 using namespace std;
-
-// Реализуйте функции и методы классов и при необходимости добавьте свои
 
 class Date {
 public:
@@ -30,15 +30,16 @@ ostream& operator<<(ostream& out, const Date& d);
 
 class Database {
 public:
-  void AddEvent(const Date& date, const string& event);
-  bool DeleteEvent(const Date& date, const string& event);
-  int  DeleteDate(const Date& date);
+	void AddEvent(const Date& date, const string& event);
+	bool DeleteEvent(const Date& date, const string& event);
+	int  DeleteDate(const Date& date);
 
-  void/* ??? */ Find(const Date& date) const {
-	  throw "not implemented";
-  }
+	set<string> Find(const Date& date) const;
 
-  void Print() const;
+	void Print() const;
+
+private:
+	map<Date, set<string>> events;
 };
 
 #endif // DATABASE_H

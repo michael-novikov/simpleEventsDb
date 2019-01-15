@@ -97,3 +97,44 @@ bool operator==(const Date& lhs, const Date& rhs) {
 ostream& operator<<(ostream& out, const Date& d) {
 	return out << d.ToString();
 }
+
+void Database::AddEvent(const Date& date, const string& event) {
+	events[date].insert(event);
+}
+
+bool Database::DeleteEvent(const Date& date, const string& event) {
+	if (events.count(date) == 0) {
+		return false;
+	}
+
+	return events[date].erase(event) > 0;
+}
+
+int Database::DeleteDate(const Date& date) {
+	if (events.count(date) == 0) {
+		return 0;
+	}
+
+	int size = events[date].size();
+	events[date] = {};
+
+	return size;
+}
+
+set<string> Database::Find(const Date& date) const {
+	if (events.count(date) > 0) {
+		return events.at(date);
+	} else {
+		return {};
+	}
+}
+
+void Database::Print() const {
+	for (const auto& item : events) {
+		cout << item.first;
+		for (const auto& event : item.second) {
+			cout << " " << event;
+		}
+		cout << endl;
+	}
+}
