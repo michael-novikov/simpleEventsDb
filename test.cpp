@@ -85,4 +85,16 @@ BOOST_AUTO_TEST_CASE(ParseDate) {
 	BOOST_CHECK_THROW(Date::ParseDate("2000-0-1"), domain_error);
 }
 
+BOOST_AUTO_TEST_CASE(DatabaseAddAndFind) {
+	Database db;
+	db.AddEvent(Date(2000, 01, 01), "event");
+
+	auto e1 = db.Find(Date(2000, 01, 01));
+	BOOST_REQUIRE_EQUAL(e1.size(), 1);
+	BOOST_REQUIRE_EQUAL(*e1.begin(), "event");
+
+	auto e2 = db.Find(Date(2000, 01, 02));
+	BOOST_REQUIRE_EQUAL(e2.size(), 0);
+}
+
 BOOST_AUTO_TEST_SUITE_END()

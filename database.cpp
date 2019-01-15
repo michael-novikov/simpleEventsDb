@@ -97,3 +97,15 @@ bool operator==(const Date& lhs, const Date& rhs) {
 ostream& operator<<(ostream& out, const Date& d) {
 	return out << d.ToString();
 }
+
+void Database::AddEvent(const Date& date, const string& event) {
+	events[date].insert(event);
+}
+
+set<string> Database::Find(const Date& date) const {
+	if (events.count(date) > 0) {
+		return events.at(date);
+	} else {
+		return {};
+	}
+}
