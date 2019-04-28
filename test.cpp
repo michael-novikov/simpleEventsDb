@@ -3,6 +3,7 @@
 
 #include <sstream>
 
+#include "date.h"
 #include "database.h"
 
 BOOST_AUTO_TEST_SUITE(DatabaseTest)
@@ -68,23 +69,23 @@ BOOST_AUTO_TEST_CASE(testDateToString) {
 }
 
 BOOST_AUTO_TEST_CASE(testParseDate) {
-	BOOST_CHECK_NO_THROW(Date::ParseDate("2000-01-01"));
+	BOOST_CHECK_NO_THROW(ParseDate("2000-01-01"));
 
-	const Date d1 = Date::ParseDate("2000-01-01");
+	const Date d1 = ParseDate("2000-01-01");
 	const Date d2(2000, 1, 1);
 	BOOST_REQUIRE_EQUAL(d1, d2);
 
-	BOOST_CHECK_THROW(Date::ParseDate("2000---01-01"), invalid_argument);
-	BOOST_CHECK_THROW(Date::ParseDate("2000-01---01"), invalid_argument);
+	BOOST_CHECK_THROW(ParseDate("2000---01-01"), invalid_argument);
+	BOOST_CHECK_THROW(ParseDate("2000-01---01"), invalid_argument);
 
-	BOOST_CHECK_THROW(Date::ParseDate("2000.01.01"), invalid_argument);
-	BOOST_CHECK_THROW(Date::ParseDate("2000/01/01"), invalid_argument);
+	BOOST_CHECK_THROW(ParseDate("2000.01.01"), invalid_argument);
+	BOOST_CHECK_THROW(ParseDate("2000/01/01"), invalid_argument);
 
-	BOOST_CHECK_THROW(Date::ParseDate("a2000-01-01"), invalid_argument);
-	BOOST_CHECK_THROW(Date::ParseDate("2000-01-01a"), invalid_argument);
+	BOOST_CHECK_THROW(ParseDate("a2000-01-01"), invalid_argument);
+	BOOST_CHECK_THROW(ParseDate("2000-01-01a"), invalid_argument);
 
-	BOOST_CHECK_THROW(Date::ParseDate("2000-1-0"), domain_error);
-	BOOST_CHECK_THROW(Date::ParseDate("2000-0-1"), domain_error);
+	BOOST_CHECK_THROW(ParseDate("2000-1-0"), domain_error);
+	BOOST_CHECK_THROW(ParseDate("2000-0-1"), domain_error);
 
 	Date d3;
 	stringstream stream("2000-01-01");
@@ -99,12 +100,12 @@ BOOST_AUTO_TEST_CASE(testParseDate) {
 	stringstream stream3("2000-1-0");
 	BOOST_CHECK_THROW(stream3 >> d5, domain_error);
 
-	BOOST_REQUIRE_EQUAL(Date::ParseDate("1-1-1"), Date(1, 1, 1));
-	BOOST_REQUIRE_EQUAL(Date::ParseDate("-1-1-1"), Date(-1, 1, 1));
-	BOOST_CHECK_THROW(Date::ParseDate("1--1-0"), domain_error);
-	BOOST_CHECK_THROW(Date::ParseDate("1-1--1"), domain_error);
-	BOOST_CHECK_THROW(Date::ParseDate("1---1-1"), invalid_argument);
-	BOOST_CHECK_THROW(Date::ParseDate("1-1---1"), invalid_argument);
+	BOOST_REQUIRE_EQUAL(ParseDate("1-1-1"), Date(1, 1, 1));
+	BOOST_REQUIRE_EQUAL(ParseDate("-1-1-1"), Date(-1, 1, 1));
+	BOOST_CHECK_THROW(ParseDate("1--1-0"), domain_error);
+	BOOST_CHECK_THROW(ParseDate("1-1--1"), domain_error);
+	BOOST_CHECK_THROW(ParseDate("1---1-1"), invalid_argument);
+	BOOST_CHECK_THROW(ParseDate("1-1---1"), invalid_argument);
 }
 
 BOOST_AUTO_TEST_CASE(testDatabaseAddAndFind) {
