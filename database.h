@@ -1,36 +1,24 @@
-#ifndef DATABASE_H
-#define DATABASE_H
+#pragma once
 
 #include <string>
 #include <map>
 #include <set>
+#include <iostream>
+
+#include "date.h"
 
 using namespace std;
 
-class Date {
-public:
-	Date(int year = 0, int month = 1, int day = 1);
-
-	int GetYear() const;
-	int GetMonth() const;
-	int GetDay() const;
-
-	string ToString() const;
-
-	static Date ParseDate(const string& s);
-private:
-	int year;
-	int month;
-	int day;
-};
-
-bool operator<(const Date& lhs, const Date& rhs);
-bool operator==(const Date& lhs, const Date& rhs);
-ostream& operator<<(ostream& out, const Date& d);
-istream& operator>>(istream& out, Date& d);
+using Predicate = function<bool(const Date& date, const string& event)>;
 
 class Database {
 public:
+	void Add(const Date& date, const string& event);
+	void Print(ostream& os) const;
+	int RemoveIf(const Predicate& p);
+	vector<pair<Date, set<string> > > FindIf(const Predicate& p) const;
+	string Last(const Date& date) const;
+
 	void AddEvent(const Date& date, const string& event);
 	bool DeleteEvent(const Date& date, const string& event);
 	int  DeleteDate(const Date& date);
@@ -42,5 +30,3 @@ public:
 private:
 	map<Date, set<string>> events;
 };
-
-#endif // DATABASE_H
