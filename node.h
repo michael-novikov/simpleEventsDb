@@ -18,9 +18,7 @@ enum class LogicalOperation { Or, And };
 class LogicalOperationNode: public Node {
 public:
 	LogicalOperationNode(LogicalOperation op, shared_ptr<Node> lhs, shared_ptr<Node> rhs);
-
 	virtual bool Evaluate(const Date& date, const string& event) const override;
-
 private:
 	LogicalOperation op;
 	shared_ptr<Node> left;
@@ -33,7 +31,6 @@ template<typename T>
 class ComparisonNode: public Node {
 public:
 	ComparisonNode(Comparison c, T v);
-
 private:
 	Comparison cmp;
 	T value;
