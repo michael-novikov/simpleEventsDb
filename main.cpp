@@ -10,7 +10,9 @@
 using namespace std;
 
 string ParseEvent(istream& is) {
-	return "";
+	string event;
+	getline(is, event);
+	return event;
 }
 
 void TestAll();
@@ -23,8 +25,12 @@ int main() {
   for (string line; getline(cin, line); ) {
     istringstream is(line);
 
-    string command;
-    is >> command;
+    const string command = [&is]{
+    	string cmd;
+    	is >> cmd;
+    	return cmd;
+    }();
+
     if (command == "Add") {
       const auto date = ParseDate(is);
       const auto event = ParseEvent(is);
