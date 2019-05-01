@@ -4,49 +4,61 @@
 #include <sstream>
 #include <iostream>
 #include <iomanip>
+#include <algorithm>
+#include <stdexcept>
 
 using namespace std;
 
-void Database::AddEvent(const Date& date, const string& event)
+void Database::Add(const Date& date, const string& event)
 {
-	events[date].insert(event);
+	events.emplace(date, event);
 }
 
-bool Database::DeleteEvent(const Date& date, const string& event)
+vector<pair<Date, string> > Database::FindIf(const Predicate& p) const
 {
-	if (events.count(date) == 0) {
-		return false;
-	}
+	vector<pair<Date, string> > res;
 
-	return events[date].erase(event) > 0;
-}
-
-int Database::DeleteDate(const Date& date)
-{
-	if (events.count(date) == 0) {
-		return 0;
-	}
-
-	int size = events[date].size();
-	events.erase(date);
-
-	return size;
-}
-
-set<string> Database::Find(const Date& date) const
-{
-	if (events.count(date) > 0) {
-		return events.at(date);
-	}
-	else {
-		return {};
-	}
-}
-
-void Database::Print() const {
 	for (const auto& item : events) {
-		for (const auto& event : item.second) {
-			cout << item.first << " " << event << endl;
+		if (p(item.first, item.second)) {
+			res.push_back(item);
 		}
+	}
+
+	return res;
+}
+
+string Database::Last(const Date& date) const
+{
+	const auto range = events.equal_range(date);
+
+	if (range.first == end(events)) {
+		throw invalid_argument {"No entries for " + date.ToString()};
+	}
+
+	auto last = prev(range.second);
+	return last->second;
+}
+
+int Database::RemoveIf(const Predicate& p)
+{
+	int count { 0 };
+
+	for (auto it = begin(events); it != end(events); ) {
+		if (p(it->first, it->second)) {
+			it = events.erase(it);
+			++count;
+		}
+		else {
+			++it;
+		}
+	}
+
+	return count;
+}
+
+void Database::Print(ostream& os) const
+{
+	for (const auto& item : events) {
+		os << item.first << " " << item.second << endl;
 	}
 }
