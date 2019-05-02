@@ -108,7 +108,6 @@ Date ParseDate(istream& stream)
 
 	if (!(stream >> year)) {
 		throw invalid_argument(error);
-		;
 	}
 
 	if (stream.peek() != '-') {
@@ -124,10 +123,6 @@ Date ParseDate(istream& stream)
 
 	stream.ignore(1);
 	stream >> day;
-
-	if (stream.rdbuf()->in_avail()) {
-		throw invalid_argument(error);
-	}
 
 	return Date(year, month, day);
 }

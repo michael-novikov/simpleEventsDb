@@ -53,7 +53,7 @@ bool DateComparisonNode::Evaluate(const Date& date, const string& event) const
 	case Comparison::NotEqual:
 			return date != value;
 	default:
-		throw logic_error("Unsupported comparison type");
+		throw logic_error("Unsupported date comparison type");
 	}
 }
 
@@ -65,11 +65,19 @@ EventComparisonNode::EventComparisonNode(Comparison c, string v)
 bool EventComparisonNode::Evaluate(const Date& date, const string& event) const
 {
 	switch (cmp) {
-	case Comparison::Equal:
-			return event == value;
-	case Comparison::NotEqual:
-			return event != value;
+	case Comparison::Less:
+	        return event < value;
+	    case Comparison::LessOrEqual:
+	            return event <= value;
+	    case Comparison::Greater:
+	            return event > value;
+	    case Comparison::GreaterOrEqual:
+	            return event >= value;
+	    case Comparison::Equal:
+	            return event == value;
+	    case Comparison::NotEqual:
+	            return event != value;
 	default:
-		throw logic_error("Unsupported comparison type");
+		throw logic_error("Unsupported event comparison type");
 	}
 }
