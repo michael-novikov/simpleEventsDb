@@ -21,7 +21,10 @@ ostream& operator<<(ostream& os, const Event& e)
 
 void Database::Add(const Date& date, const string& event)
 {
-	events.insert( { date, event });
+    const auto found = FindIf([&](const Date& d, const string& e) { return date == d && event == e; });
+    if (found.empty()) {
+        events.insert({ date, event });
+    }
 }
 
 vector<Event> Database::FindIf(const Predicate& p) const
@@ -37,11 +40,15 @@ vector<Event> Database::FindIf(const Predicate& p) const
 	return res;
 }
 
-string Database::Last(const Date& date) const
+Event Database::Last(const Date& date) const
 {
-	const auto last = find_if(rbegin(events), rend(events),
-			[&date](const Event& e) {return date == e.date;});
-	return last->event;
+    const auto entries = FindIf([&date](const Date& d, const string&) { return d <= date; });
+
+    if (entries.empty()) {
+        throw invalid_argument("No entries");
+    }
+
+    return entries.back();
 }
 
 int Database::RemoveIf(const Predicate& p)

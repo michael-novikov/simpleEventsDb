@@ -25,7 +25,7 @@ public:
 	void Add(const Date& date, const string& event);
 
 	vector<Event> FindIf(const Predicate& p) const;
-	string Last(const Date& date) const;
+	Event Last(const Date& date) const;
 
 	int RemoveIf(const Predicate& p);
 
