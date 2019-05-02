@@ -9,17 +9,27 @@
 
 using namespace std;
 
-void Database::Add(const Date& date, const string& event)
+bool operator<(const Event &lhs, const Event &rhs)
 {
-	events.emplace(date, event);
+	return lhs.date < rhs.date;
 }
 
-vector<pair<Date, string> > Database::FindIf(const Predicate& p) const
+ostream& operator<<(ostream& os, const Event& e)
 {
-	vector<pair<Date, string> > res;
+	return os << e.date << " " << e.event;
+}
+
+void Database::Add(const Date& date, const string& event)
+{
+	events.insert( { date, event });
+}
+
+vector<Event> Database::FindIf(const Predicate& p) const
+{
+	vector<Event> res;
 
 	for (const auto& item : events) {
-		if (p(item.first, item.second)) {
+		if (p(item.date, item.event)) {
 			res.push_back(item);
 		}
 	}
@@ -29,22 +39,17 @@ vector<pair<Date, string> > Database::FindIf(const Predicate& p) const
 
 string Database::Last(const Date& date) const
 {
-	const auto range = events.equal_range(date);
-
-	if (range.first == end(events)) {
-		throw invalid_argument {"No entries for " + date.ToString()};
-	}
-
-	auto last = prev(range.second);
-	return last->second;
+	const auto last = find_if(rbegin(events), rend(events),
+			[&date](const Event& e) {return date == e.date;});
+	return last->event;
 }
 
 int Database::RemoveIf(const Predicate& p)
 {
 	int count { 0 };
 
-	for (auto it = begin(events); it != end(events); ) {
-		if (p(it->first, it->second)) {
+	for (auto it = begin(events); it != end(events);) {
+		if (p(it->date, it->event)) {
 			it = events.erase(it);
 			++count;
 		}
@@ -59,6 +64,6 @@ int Database::RemoveIf(const Predicate& p)
 void Database::Print(ostream& os) const
 {
 	for (const auto& item : events) {
-		os << item.first << " " << item.second << endl;
+		os << item << endl;
 	}
 }
