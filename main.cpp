@@ -11,7 +11,7 @@ using namespace std;
 
 string ParseEvent(istream& is) {
 	string event;
-	getline(is, event);
+	getline(is >> ws, event);
 	return event;
 }
 
