@@ -18,6 +18,9 @@ struct Event {
 };
 
 bool operator<(const Event &lhs, const Event &rhs);
+bool operator<(const Event& e, const Date& d);
+bool operator<(const Date& d, const Event& e);
+
 ostream& operator<<(ostream& os, const Event& e);
 
 class Database {
@@ -32,5 +35,5 @@ public:
 	void Print(ostream& os) const;
 
 private:
-	multiset<Event> events {};
+	multiset<Event, less<> > events {};
 };
