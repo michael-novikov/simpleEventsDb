@@ -1,6 +1,7 @@
 #pragma once
 
 #include "date.h"
+#include <memory>
 
 class Node {
 public:
@@ -31,7 +32,7 @@ template<typename T>
 class ComparisonNode: public Node {
 public:
 	ComparisonNode(Comparison c, T v);
-private:
+protected:
 	Comparison cmp;
 	T value;
 };

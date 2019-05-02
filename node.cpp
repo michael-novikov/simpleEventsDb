@@ -1,7 +1,7 @@
 #include "node.h"
 #include <stdexcept>
 
-virtual bool EmptyNode::Evaluate(const Date& date, const string& event) const
+bool EmptyNode::Evaluate(const Date& date, const string& event) const
 {
 	return true;
 }
@@ -13,7 +13,7 @@ LogicalOperationNode::LogicalOperationNode(LogicalOperation o, shared_ptr<Node> 
 {
 }
 
-virtual bool LogicalOperationNode::Evaluate(const Date& date, const string& event) const
+bool LogicalOperationNode::Evaluate(const Date& date, const string& event) const
 {
 	switch (op) {
 	case LogicalOperation::Or:
@@ -21,7 +21,7 @@ virtual bool LogicalOperationNode::Evaluate(const Date& date, const string& even
 	case LogicalOperation::And:
 		return left->Evaluate(date, event) && right->Evaluate(date, event);
 	default:
-		throw logic_error("Unsupported logical operation: " + op);
+		throw logic_error("Unsupported logical operation");
 	}
 }
 
@@ -37,24 +37,23 @@ DateComparisonNode::DateComparisonNode(Comparison c, Date v)
 {
 }
 
-virtual bool DateComparisonNode::Evaluate(const Date& date, const string& event) const
+bool DateComparisonNode::Evaluate(const Date& date, const string& event) const
 {
-	// TODO: implement comparison operator for Date
-	switch(cmp) {
+	switch (cmp) {
 	case Comparison::Less:
-		return value < date;
+		return date < value;
 	case Comparison::LessOrEqual:
-			return value <= date;
+			return date <= value;
 	case Comparison::Greater:
-			return value > date;
+			return date > value;
 	case Comparison::GreaterOrEqual:
-			return value >= date;
+			return date >= value;
 	case Comparison::Equal:
-			return value == date;
+			return date == value;
 	case Comparison::NotEqual:
-			return value != date;
+			return date != value;
 	default:
-		throw logic_error("Unsupported comparison type: " + cmp);
+		throw logic_error("Unsupported comparison type");
 	}
 }
 
@@ -63,14 +62,14 @@ EventComparisonNode::EventComparisonNode(Comparison c, string v)
 {
 }
 
-virtual bool EventComparisonNode::Evaluate(const Date& date, const string& event) const
+bool EventComparisonNode::Evaluate(const Date& date, const string& event) const
 {
-	switch(cmp) {
-		case Comparison::Equal:
-				return value == event;
-		case Comparison::NotEqual:
-				return value != event;
-		default:
-			throw logic_error("Unsupported comparison type: " + cmp);
-		}
+	switch (cmp) {
+	case Comparison::Equal:
+			return event == value;
+	case Comparison::NotEqual:
+			return event != value;
+	default:
+		throw logic_error("Unsupported comparison type");
+	}
 }
