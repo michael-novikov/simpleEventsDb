@@ -45,6 +45,18 @@ string Date::ToString() const
 	return stream.str();
 }
 
+bool operator==(const Date& lhs, const Date& rhs)
+ {
+	return (lhs.GetYear() == rhs.GetYear())
+			&& (lhs.GetMonth() == rhs.GetMonth())
+			&& (lhs.GetDay() == rhs.GetDay());
+}
+
+bool operator!=(const Date& lhs, const Date& rhs)
+{
+	return !(lhs == rhs);
+}
+
 bool operator<(const Date& lhs, const Date& rhs)
 {
 	if (lhs.GetYear() < rhs.GetYear()) {
@@ -63,11 +75,19 @@ bool operator<(const Date& lhs, const Date& rhs)
 	return false;
 }
 
-bool operator==(const Date& lhs, const Date& rhs)
+bool operator<=(const Date& lhs, const Date& rhs)
 {
-	return (lhs.GetYear() == rhs.GetYear())
-			&& (lhs.GetMonth() == rhs.GetMonth())
-			&& (lhs.GetDay() == rhs.GetDay());
+	return lhs < rhs || lhs == rhs;
+}
+
+bool operator>(const Date& lhs, const Date& rhs)
+{
+	return rhs < lhs;
+}
+
+bool operator>=(const Date& lhs, const Date& rhs)
+{
+	return rhs < lhs || rhs == lhs;
 }
 
 ostream& operator<<(ostream& out, const Date& d)
@@ -81,12 +101,14 @@ istream& operator>>(istream& in, Date& d)
 	return in;
 }
 
-Date ParseDate(istream& stream) {
+Date ParseDate(istream& stream)
+{
 	string error = "Wrong date format.";
 	int year, month, day;
 
 	if (!(stream >> year)) {
-		throw invalid_argument(error);;
+		throw invalid_argument(error);
+		;
 	}
 
 	if (stream.peek() != '-') {
@@ -110,7 +132,8 @@ Date ParseDate(istream& stream) {
 	return Date(year, month, day);
 }
 
-Date ParseDate(const string& s) {
+Date ParseDate(const string& s)
+{
 	istringstream is { s };
 	return ParseDate(is);
 }

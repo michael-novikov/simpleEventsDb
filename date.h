@@ -20,8 +20,13 @@ private:
 	int day;
 };
 
-bool operator<(const Date& lhs, const Date& rhs);
 bool operator==(const Date& lhs, const Date& rhs);
+bool operator!=(const Date& lhs, const Date& rhs);
+bool operator<(const Date& lhs, const Date& rhs);
+bool operator<=(const Date& lhs, const Date& rhs);
+bool operator>(const Date& lhs, const Date& rhs);
+bool operator>=(const Date& lhs, const Date& rhs);
+
 ostream& operator<<(ostream& out, const Date& d);
 istream& operator>>(istream& out, Date& d);
 
