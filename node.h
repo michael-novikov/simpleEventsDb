@@ -5,25 +5,25 @@
 
 class Node {
 public:
-	virtual bool Evaluate(const Date& date, const string& event) const = 0;
+	virtual bool Evaluate(const Date& date, const std::string& event) const = 0;
 	virtual ~Node() = default;
 };
 
 class EmptyNode: public Node {
 public:
-	virtual bool Evaluate(const Date& date, const string& event) const override;
+	virtual bool Evaluate(const Date& date, const std::string& event) const override;
 };
 
 enum class LogicalOperation { Or, And };
 
 class LogicalOperationNode: public Node {
 public:
-	LogicalOperationNode(LogicalOperation op, shared_ptr<Node> lhs, shared_ptr<Node> rhs);
-	virtual bool Evaluate(const Date& date, const string& event) const override;
+	LogicalOperationNode(LogicalOperation op, std::shared_ptr<Node> lhs, std::shared_ptr<Node> rhs);
+	virtual bool Evaluate(const Date& date, const std::string& event) const override;
 private:
 	LogicalOperation op;
-	shared_ptr<Node> left;
-	shared_ptr<Node> right;
+	std::shared_ptr<Node> left;
+	std::shared_ptr<Node> right;
 };
 
 enum class Comparison { Less, LessOrEqual, Greater, GreaterOrEqual, Equal, NotEqual };
@@ -40,11 +40,11 @@ protected:
 class DateComparisonNode: public ComparisonNode<Date> {
 public:
 	DateComparisonNode(Comparison c, Date v);
-	virtual bool Evaluate(const Date& date, const string& event) const override;
+	virtual bool Evaluate(const Date& date, const std::string& event) const override;
 };
 
-class EventComparisonNode: public ComparisonNode<string> {
+class EventComparisonNode: public ComparisonNode<std::string> {
 public:
-	EventComparisonNode(Comparison c, string v);
-	virtual bool Evaluate(const Date& date, const string& event) const override;
+	EventComparisonNode(Comparison c, std::string v);
+	virtual bool Evaluate(const Date& date, const std::string& event) const override;
 };

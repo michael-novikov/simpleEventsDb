@@ -3,8 +3,6 @@
 #include <string>
 #include <iostream>
 
-using namespace std;
-
 class Date {
 public:
 	Date(int year = 0, int month = 1, int day = 1);
@@ -13,7 +11,7 @@ public:
 	int GetMonth() const;
 	int GetDay() const;
 
-	string ToString() const;
+	std::string ToString() const;
 private:
 	int year;
 	int month;
@@ -27,8 +25,16 @@ bool operator<=(const Date& lhs, const Date& rhs);
 bool operator>(const Date& lhs, const Date& rhs);
 bool operator>=(const Date& lhs, const Date& rhs);
 
-ostream& operator<<(ostream& out, const Date& d);
-istream& operator>>(istream& out, Date& d);
+std::ostream& operator<<(std::ostream& out, const Date& d);
+std::istream& operator>>(std::istream& out, Date& d);
 
-Date ParseDate(istream& stream);
-Date ParseDate(const string& s);
+Date ParseDate(std::istream& stream);
+Date ParseDate(const std::string& s);
+
+namespace std
+{
+    template<> struct hash<Date>
+    {
+        std::size_t operator()(Date const& s) const noexcept;
+    };
+}

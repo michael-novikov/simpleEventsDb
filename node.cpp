@@ -1,6 +1,8 @@
 #include "node.h"
 #include <stdexcept>
 
+using namespace std;
+
 bool EmptyNode::Evaluate(const Date& date, const string& event) const
 {
 	return true;

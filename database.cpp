@@ -1,5 +1,4 @@
 #include "database.h"
-#include "date.h"
 
 #include <sstream>
 #include <iostream>
@@ -9,39 +8,11 @@
 
 using namespace std;
 
-bool operator<(const Event &lhs, const Event &rhs)
-{
-	return lhs.date < rhs.date;
-}
-
-bool operator<(const Event& e, const Date& d)
-{
-    return e.date < d;
-}
-
-bool operator<(const Date& d, const Event& e)
-{
-    return d < e.date;
-}
-
-ostream& operator<<(ostream& os, const Event& e)
-{
-	return os << e.date << " " << e.event;
-}
-
 void Database::Add(const Date& date, const string& event)
 {
-    const auto range = events.equal_range(date);
-
-    if (range.first == end(events)) {
-        events.insert({ date, event });
-    }
-    else {
-        const auto it = find_if(range.first, range.second,
-                [&](const Event& item) { return event == item.event; });
-        if (it == range.second) {
-            events.insert({ date, event });
-        }
+    if (!unordered_storage[date].count(event)) {
+        storage.insert({ date, event });
+        unordered_storage[date].insert(event);
     }
 }
 
@@ -49,7 +20,7 @@ vector<Event> Database::FindIf(const Predicate& p) const
 {
 	vector<Event> res;
 
-	for (const auto& item : events) {
+	for (const auto& item : storage) {
 		if (p(item.date, item.event)) {
 			res.push_back(item);
 		}
@@ -60,9 +31,9 @@ vector<Event> Database::FindIf(const Predicate& p) const
 
 Event Database::Last(const Date& date) const
 {
-    const auto it = events.upper_bound(date);
+    const auto it = storage.upper_bound(date);
 
-    if (it == begin(events)) {
+    if (it == begin(storage)) {
         throw invalid_argument("No entries");
     }
 
@@ -73,9 +44,10 @@ int Database::RemoveIf(const Predicate& p)
 {
 	int count { 0 };
 
-	for (auto it = begin(events); it != end(events);) {
+	for (auto it = begin(storage); it != end(storage);) {
 		if (p(it->date, it->event)) {
-			it = events.erase(it);
+		    unordered_storage[it->date].erase(it->event);
+		    it = storage.erase(it);
 			++count;
 		}
 		else {
@@ -88,7 +60,7 @@ int Database::RemoveIf(const Predicate& p)
 
 void Database::Print(ostream& os) const
 {
-	for (const auto& item : events) {
+	for (const auto& item : storage) {
 		os << item << endl;
 	}
 }

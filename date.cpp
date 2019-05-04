@@ -4,6 +4,8 @@
 #include <sstream>
 #include <iomanip>
 
+using namespace std;
+
 Date::Date(int year, int month, int day)
 {
 	if (month < 1 || month > 12) {
@@ -131,4 +133,15 @@ Date ParseDate(const string& s)
 {
 	istringstream is { s };
 	return ParseDate(is);
+}
+
+namespace std
+{
+    size_t hash<Date>::operator()(const Date & d) const noexcept
+        {
+            size_t const h1 ( hash<int>{}(d.GetYear()) );
+            size_t const h2 ( hash<int>{}(d.GetMonth()) );
+            size_t const h3 ( hash<int>{}(d.GetDay()) );
+            return h1 ^ (h2 << 1) ^ (h3 << 2);
+        }
 }
