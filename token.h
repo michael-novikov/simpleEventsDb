@@ -1,4 +1,5 @@
-#pragma once
+#ifndef TOKEN_H
+#define TOKEN_H
 
 #include <sstream>
 #include <vector>
@@ -20,3 +21,5 @@ struct Token {
 };
 
 vector<Token> Tokenize(istream& cl);
+
+#endif // TOKEN_H

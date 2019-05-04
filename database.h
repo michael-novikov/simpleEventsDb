@@ -1,4 +1,5 @@
-#pragma once
+#ifndef DATABASE_H
+#define DATABASE_H
 
 #include "date.h"
 #include "event.h"
@@ -28,3 +29,5 @@ private:
 	std::multiset<Event, std::less<> > storage {};
 	std::unordered_map<Date, std::unordered_set<std::string> > unordered_storage;
 };
+
+#endif // DATABASE_H

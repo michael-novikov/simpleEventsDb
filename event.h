@@ -1,4 +1,5 @@
-#pragma once
+#ifndef EVENT_H
+#define EVENT_H
 
 #include "date.h"
 #include <string>
@@ -13,3 +14,5 @@ bool operator<(const Event& e, const Date& d);
 bool operator<(const Date& d, const Event& e);
 
 std::ostream& operator<<(std::ostream& os, const Event& e);
+
+#endif // EVENT_H

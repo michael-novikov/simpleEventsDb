@@ -1,4 +1,5 @@
-#pragma once
+#ifndef DATE_H
+#define DATE_H
 
 #include <string>
 #include <iostream>
@@ -38,3 +39,5 @@ namespace std
         std::size_t operator()(Date const& s) const noexcept;
     };
 }
+
+#endif // DATE_H

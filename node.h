@@ -1,4 +1,5 @@
-#pragma once
+#ifndef NODE_H
+#define NODE_H
 
 #include "date.h"
 #include <memory>
@@ -48,3 +49,5 @@ public:
 	EventComparisonNode(Comparison c, std::string v);
 	virtual bool Evaluate(const Date& date, const std::string& event) const override;
 };
+
+#endif // NODE_H
