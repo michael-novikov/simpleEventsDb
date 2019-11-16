@@ -105,26 +105,25 @@ istream& operator>>(istream& in, Date& d)
 
 Date ParseDate(istream& stream)
 {
-	string error = "Wrong date format.";
 	int year, month, day;
 
-	if (!(stream >> year)) {
-		throw invalid_argument(error);
-	}
+	auto parsing_assert = [](bool stmt) {
+	    if (!stmt) {
+	        throw invalid_argument("Wrong date format");
+	    }
+	};
 
-	if (stream.peek() != '-') {
-		throw invalid_argument(error);
-	}
+	parsing_assert(static_cast<bool>(stream >> year));
 
+	parsing_assert(stream.peek() == '-');
 	stream.ignore(1);
-	stream >> month;
 
-	if (stream.peek() != '-') {
-		throw invalid_argument(error);
-	}
+	parsing_assert(static_cast<bool>(stream >> month));
 
+	parsing_assert(stream.peek() == '-');
 	stream.ignore(1);
-	stream >> day;
+
+	parsing_assert(static_cast<bool>(stream >> day));
 
 	return Date(year, month, day);
 }

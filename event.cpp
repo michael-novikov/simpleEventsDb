@@ -19,3 +19,9 @@ std::ostream& operator<<(std::ostream& os, const Event& e)
 {
     return os << e.date << " " << e.event;
 }
+
+std::string ParseEvent(std::istream& is) {
+    std::string event;
+    std::getline(is >> std::ws, event);
+    return event;
+}
