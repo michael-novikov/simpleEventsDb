@@ -1,10 +1,9 @@
 #ifndef CONDITION_PARSER_H
 #define CONDITION_PARSER_H
 
-#include "node.h"
-
 #include <memory>
 #include <iostream>
+#include "../include/node.h"
 
 std::shared_ptr<Node> ParseCondition(std::istream& is);
 

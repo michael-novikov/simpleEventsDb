@@ -1,9 +1,6 @@
 #ifndef DATABASE_H
 #define DATABASE_H
 
-#include "date.h"
-#include "event.h"
-
 #include <vector>
 #include <string>
 #include <set>
@@ -11,6 +8,8 @@
 #include <unordered_map>
 #include <iostream>
 #include <functional>
+#include "../include/date.h"
+#include "../include/event.h"
 
 using Predicate = std::function<bool(const Date& date, const std::string& event)>;
 

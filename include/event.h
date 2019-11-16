@@ -1,9 +1,9 @@
 #ifndef EVENT_H
 #define EVENT_H
 
-#include "date.h"
 #include <string>
 #include <iostream>
+#include "../include/date.h"
 
 struct Event {
     Date date;

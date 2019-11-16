@@ -2,9 +2,9 @@
 
 #include <sstream>
 
-#include "date.h"
-#include "event.h"
-#include "database.h"
+#include "include/date.h"
+#include "include/event.h"
+#include "include/database.h"
 
 using namespace std;
 

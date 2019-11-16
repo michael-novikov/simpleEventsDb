@@ -1,7 +1,7 @@
-#include "condition_parser.h"
-#include "token.h"
+#include "include/condition_parser.h"
 
 #include <map>
+#include "../include/token.h"
 
 using namespace std;
 
