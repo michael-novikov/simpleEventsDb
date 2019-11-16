@@ -1,67 +1,63 @@
+#include "include/condition_parser.h"
+#include "include/database.h"
+#include "include/date.h"
+#include "include/event.h"
+#include "include/node.h"
+
 #include <iostream>
 #include <sstream>
-#include <string>
+#include <stdexcept>
 
-#include "database.h"
+using namespace std;
 
 int main() {
-	Database db;
+  Database db;
 
-	string command;
-	while (getline(cin, command)) {
-		if (command == "") {
-			continue;
-		}
+  for (string line; getline(cin, line); ) {
+    istringstream is(line);
 
-		stringstream stream(command);
-		string op_code;
+    const string command = [&is]{
+    	string cmd;
+    	is >> cmd;
+    	return cmd;
+    }();
 
-		stream >> op_code;
-		if ((op_code == "Add") || (op_code == "Del") || (op_code == "Find")) {
-			string dateStr;
-			stream >> dateStr;
-			Date date;
+    if (command == "Add") {
+      const auto date = ParseDate(is);
+      const auto event = ParseEvent(is);
+      db.Add(date, event);
+    } else if (command == "Print") {
+      db.Print(cout);
+    } else if (command == "Del") {
+      auto condition = ParseCondition(is);
+      auto predicate = [condition](const Date& date, const string& event) {
+        return condition->Evaluate(date, event);
+      };
+      int count = db.RemoveIf(predicate);
+      cout << "Removed " << count << " entries" << endl;
+    } else if (command == "Find") {
+      auto condition = ParseCondition(is);
+      auto predicate = [condition](const Date& date, const string& event) {
+        return condition->Evaluate(date, event);
+      };
 
-			try {
-				date = Date::ParseDate(dateStr);
-			} catch (invalid_argument& e) {
-				cout << e.what() << endl;
-				return -1;
-			} catch (domain_error& e) {
-				cout << e.what() << endl;
-				return -1;
-			}
+      const auto entries = db.FindIf(predicate);
+      for (const auto& entry : entries) {
+        cout << entry << endl;
+      }
+      cout << "Found " << entries.size() << " entries" << endl;
+    } else if (command == "Last") {
+      try {
+          cout << db.Last(ParseDate(is)) << endl;
+      } catch (invalid_argument&) {
+          cout << "No entries" << endl;
+      }
+    } else if (command.empty()) {
+      continue;
+    } else {
+      throw logic_error("Unknown command: " + command);
+    }
+  }
 
-			if (op_code == "Add") {
-				string event;
-				stream >> event;
-
-				db.AddEvent(date, event);
-			} else if (op_code == "Del") {
-				string event;
-				if (stream >> event) {
-					if (db.DeleteEvent(date, event)) {
-						cout << "Deleted successfully" << endl;
-					} else {
-						cout << "Event not found" << endl;
-					}
-				} else {
-					int n = db.DeleteDate(date);
-					cout << "Deleted " << n << " events" << endl;
-				}
-			} else /* if (op_code == "Find") */ {
-				const auto events = db.Find(date);
-				for (const auto& event : events) {
-					cout << event << endl;
-				}
-			}
-		} else if (op_code == "Print") {
-			db.Print();
-		} else {
-			cout << "Unknown command: " << op_code << endl;
-			return -1;
-		}
-	}
-
-	return 0;
+  return 0;
 }
