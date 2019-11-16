@@ -3,8 +3,10 @@
 #include "include/date.h"
 #include "include/event.h"
 #include "include/database.h"
+#include "include/node.h"
 
 #include <sstream>
+#include <memory>
 
 using namespace std;
 
@@ -132,41 +134,68 @@ BOOST_AUTO_TEST_CASE(testParseMultipleEvents) {
     BOOST_REQUIRE_EQUAL_COLLECTIONS(begin(events), end(events), begin(events_correct), end(events_correct));
 }
 
-BOOST_AUTO_TEST_CASE(testDatabaseAddAndFind) {
-    Database db;
-    db.Add(Date(2000, 01, 01), "event");
+auto date_equal = [](const Date& date_eq) -> Predicate {
+    auto date_cmp = make_shared<DateComparisonNode>(Comparison::Equal, date_eq);
 
-//  auto e1 = db.Find(Date(2000, 01, 01));
-//  BOOST_REQUIRE_EQUAL(e1.size(), 1);
-//  BOOST_REQUIRE_EQUAL(*e1.begin(), "event");
-//
-//  auto e2 = db.Find(Date(2000, 01, 02));
-//  BOOST_REQUIRE_EQUAL(e2.size(), 0);
+    return [date_cmp](const Date& date, const string& event) -> bool {
+        return date_cmp->Evaluate(date, event);
+    };
+};
+
+auto date_event_equal = [](const Date& date_eq, const string& event_eq) -> Predicate {
+    auto date_cmp = make_shared<DateComparisonNode>(Comparison::Equal, date_eq);
+    auto event_cmp = make_shared<EventComparisonNode>(Comparison::Equal, event_eq);
+
+    auto cmp = make_shared<LogicalOperationNode>(LogicalOperation::And, date_cmp, event_cmp);
+
+    return [cmp](const Date& date, const string& event) -> bool {
+        return cmp->Evaluate(date, event);
+    };
+};
+
+BOOST_AUTO_TEST_CASE(testDatabaseAddAndFind) {
+    const auto db = []() {
+        Database d;
+        d.Add({2000, 01, 02}, "event");
+        return d;
+    }();
+
+    auto e1 = db.FindIf(date_equal({2000, 01, 02}));
+
+    BOOST_REQUIRE_EQUAL(e1.size(), 1);
+    BOOST_REQUIRE_EQUAL(e1.begin()->event, std::string{"event"});
+
+    auto e2 = db.FindIf(date_equal({2000, 01, 03}));
+
+    BOOST_REQUIRE_EQUAL(e2.size(), 0);
 }
 
-//BOOST_AUTO_TEST_CASE(testDatabaseDeleteEvent) {
-//  Database db;
-//  db.Add(Date(2000, 01, 01), "event");
-//
-//  BOOST_REQUIRE_EQUAL(db.DeleteEvent(Date(2000, 01, 01), "strange"), false);
-//  BOOST_REQUIRE_EQUAL(db.DeleteEvent(Date(2000, 01, 31), "event"), false);
-//
-//  BOOST_REQUIRE_EQUAL(db.DeleteEvent(Date(2000, 01, 01), "event"), true);
-//}
-//
-//BOOST_AUTO_TEST_CASE(testDatabaseDeleteAllEvents) {
-//  Database db;
-//  Date d(2000, 01, 01);
-//
-//  db.Add(d, "event1");
-//  db.Add(d, "event2");
-//  db.Add(d, "event3");
-//
-//  int removed1 = db.DeleteDate(d);
-//  BOOST_REQUIRE_EQUAL(removed1, 3);
-//
-//  int removed2 = db.DeleteDate(Date(2000, 01, 31));
-//  BOOST_REQUIRE_EQUAL(removed2, 0);
-//}
+BOOST_AUTO_TEST_CASE(testDatabaseDeleteEvent) {
+  Database db;
+  db.Add(Date(2000, 01, 01), "event");
+
+  BOOST_REQUIRE_EQUAL(db.RemoveIf(date_event_equal(Date(2000, 01, 01), "strange")), 0);
+  BOOST_REQUIRE_EQUAL(db.RemoveIf(date_event_equal(Date(2000, 01, 31), "event")), 0);
+
+  BOOST_REQUIRE_EQUAL(db.RemoveIf(date_event_equal(Date(2000, 01, 01), "event")), 1);
+}
+
+BOOST_AUTO_TEST_CASE(testDatabaseDeleteAllEvents) {
+  Database db;
+
+  Date d(2000, 01, 01);
+  db.Add(d, "event1");
+  db.Add(d, "event2");
+  db.Add(d, "event3");
+
+  int removed1 = db.RemoveIf(date_equal(d));
+  BOOST_REQUIRE_EQUAL(removed1, 3);
+
+  int removed2 = db.RemoveIf(date_equal(d));
+  BOOST_REQUIRE_EQUAL(removed2, 0);
+
+  int removed3 = db.RemoveIf(date_equal({2000, 01, 31}));
+  BOOST_REQUIRE_EQUAL(removed3, 0);
+}
 
 BOOST_AUTO_TEST_SUITE_END()
