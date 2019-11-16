@@ -1,11 +1,12 @@
-#include <iostream>
-#include <sstream>
-#include <stdexcept>
 #include "include/condition_parser.h"
 #include "include/database.h"
 #include "include/date.h"
 #include "include/event.h"
 #include "include/node.h"
+
+#include <iostream>
+#include <sstream>
+#include <stdexcept>
 
 using namespace std;
 

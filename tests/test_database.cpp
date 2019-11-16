@@ -1,10 +1,10 @@
 #include "boost/test/unit_test.hpp"
 
-#include <sstream>
-
 #include "include/date.h"
 #include "include/event.h"
 #include "include/database.h"
+
+#include <sstream>
 
 using namespace std;
 

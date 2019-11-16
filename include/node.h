@@ -1,8 +1,9 @@
 #ifndef NODE_H
 #define NODE_H
 
+#include "include/date.h"
+
 #include <memory>
-#include "../include/date.h"
 
 class Node {
 public:

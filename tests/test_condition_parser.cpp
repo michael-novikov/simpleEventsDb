@@ -1,6 +1,7 @@
 #include "boost/test/unit_test.hpp"
 
 #include "include/condition_parser.h"
+
 #include <sstream>
 
 using namespace std;
